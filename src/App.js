@@ -7,6 +7,11 @@ import { Erro } from './Containers/Erro';
 
 
 function App() {
-  return Pesquisa()
+  return <Resultados result={
+    {
+      "RUA": "Arthur Bliss",
+      "CIDADE": "São Paulo"
+    }
+  }/>
 }
 export default App;
