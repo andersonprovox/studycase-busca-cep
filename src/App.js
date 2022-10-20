@@ -8,14 +8,22 @@ import { Erro } from './Containers/Erro';
 
 
 function App() {
-  let numeroTela = 0;
-  function handleClick() {
-    alert('Esse botão foi cricado')
+  const [nomeTela, setNometela] = useState("PESQUISA");
+  function goTo(nomeTela) {
+    setNometela(nomeTela);
   }
   useState(0);
   return <div>
-    <button onClick={ handleClick }>Proxima Tela</button>
-    {numeroTela == 0 ? <Pesquisa/> : null}
+    
+    <div className="App">
+      <header className="App-header">
+      <button onClick={ goTo }>Proxima Tela</button>
+        {nomeTela === "PESQUISA" ? <Pesquisa goTo={goTo}/> : null}
+        {nomeTela === "RESULTADOS" ? <Resultados result={{}}/> : null}
+        {nomeTela === "ERRO" ? <Erro errorMessage="Não foi possível completar a operação"/> : null}
+        {nomeTela === "CARREGANDO" ? <Carregando goTo={goTo}/> : null}
+      </header>
+    </div>
   </div>
 }
 export default App;
