@@ -1,6 +1,6 @@
 
 import './App.css';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import  { Pesquisa }  from './Containers/Pesquisa';
 import { Resultados} from './Containers/Resultados';
 import { Carregando} from './Containers/Carregando';
@@ -9,19 +9,23 @@ import { Erro } from './Containers/Erro';
 
 function App() {
   const [nomeTela, setNometela] = useState("PESQUISA");
+  const [resultado, setResultado] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const ticket = useRef(1);
+
   function goTo(nomeTela) {
     setNometela(nomeTela);
   }
-  useState(0);
+  
   return <div>
     
     <div className="App">
       <header className="App-header">
       <button onClick={ goTo }>Proxima Tela</button>
-        {nomeTela === "PESQUISA" ? <Pesquisa goTo={goTo}/> : null}
-        {nomeTela === "RESULTADOS" ? <Resultados result={{}}/> : null}
-        {nomeTela === "ERRO" ? <Erro errorMessage="Não foi possível completar a operação"/> : null}
-        {nomeTela === "CARREGANDO" ? <Carregando goTo={goTo}/> : null}
+        {nomeTela === "PESQUISA" ? <Pesquisa goTo={goTo} setResultado={setResultado} setErrorMessage={setErrorMessage} ticket={ticket} /> : null}
+        {nomeTela === "RESULTADOS" ? <Resultados result={resultado}/> : null}
+        {nomeTela === "ERRO" ? <Erro ErrorMessage={errorMessage}/> : null}
+        {nomeTela === "CARREGANDO" ? <Carregando goTo={goTo} ticket={ticket} /> : null}
       </header>
     </div>
   </div>

@@ -7,7 +7,7 @@ export function Resultados(props) {
     ))
     return (<>
     
-        <p>Resultados para o CEP 05842-020</p>
+        <p>Resultados para o CEP {result.cep}</p>
           {elements}
         <button onClick={() => goTo("PESQUISA")}>NOVA CONSULTA</button>
     
