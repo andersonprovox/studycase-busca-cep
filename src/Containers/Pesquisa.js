@@ -18,9 +18,7 @@ export function Pesquisa(props) {
       setCepNumber(numbersOnly(value));
     }
 
-    function clear() {
-      setCepNumber("");
-    }
+   
 
     function handleSuccess(dadosCEP){
 
@@ -50,13 +48,16 @@ export function Pesquisa(props) {
       .catch(err => currentTicket == ticket.current && handleError(err))
     }
 
+    function handleAdicionarFAvorito() {
+      localStorage.setItem("cepFavorito", cepNumber);
+    }
+
     return (
       <>
         <p>Qual CEP deseja pesquisar?</p>
-        <p>Estado Atual: {cepNumber}</p>
         <input value={numbersOnly(cepNumber)} onChange={handleChange}/>
-        <button onClick={clear}>Limpar state</button>
         <button onClick={handleSearch}>PESQUISAR</button>
+        <button onClick={handleAdicionarFAvorito}>SALVAR FAVORITO</button>
 
       </>
     );
