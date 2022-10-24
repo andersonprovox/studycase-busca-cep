@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import consultarCep from 'cep-promise';
+import CEPDados from "../Components/CEPDados";
+
 
 function numbersOnly(str) {
   return str.replace(/[^\d]/g, '')
+}
+
+function translate(cepDados) {
+  return {
+    "ESTADO": cepDados.state,
+    "CIDADE": cepDados.city,
+    "BAIRRO": cepDados.neighbothood,
+    "LOGRADOURO": cepDados.street
+  }
 }
 
 export function Pesquisa(props) {
@@ -12,22 +23,32 @@ export function Pesquisa(props) {
     const setResultado = props.setResultado;
     const setErrorMessage = props.setErrorMessage;
     const [cepNumber, setCepNumber] = useState("");
+    const [cepFavorito, setCepfavorito] = useState("");
+    const [cepDados, setCepDados] = useState({});
+
+    useEffect(() =>{
+      const storedCep = localStorage.getItem("cepFavorito") || "";
+      setCepfavorito(storedCep);
+    },[]);
+
+    useEffect(() => {
+      if (!cepFavorito) {
+        return;
+      }
+      localStorage.setItem("cepFavorito", cepFavorito);
+      consultarCep(cepFavorito)
+      .then(resultado => setCepDados(resultado))
+      .catch(err => setCepDados({"ERRO": err.message}))
+    }, [cepFavorito])
     
     function handleChange(evt) {
       const value = evt.target.value;
       setCepNumber(numbersOnly(value));
     }
 
-   
+    function handleSuccess(cepDados){
 
-    function handleSuccess(dadosCEP){
-
-      const resultado = {
-        "ESTADO": dadosCEP.state,
-        "CIDADE": dadosCEP.city,
-        "BAIRRO": dadosCEP.neighbothood,
-        "LOGRADOURO": dadosCEP.street
-      }
+      const resultado = translate(cepDados);
 
       setResultado(resultado);
       goTo("RESULTADOS");
@@ -48,8 +69,9 @@ export function Pesquisa(props) {
       .catch(err => currentTicket == ticket.current && handleError(err))
     }
 
-    function handleAdicionarFAvorito() {
+    function handleAdicionarFavorito() {
       localStorage.setItem("cepFavorito", cepNumber);
+      setCepfavorito(cepNumber);
     }
 
     return (
@@ -57,7 +79,10 @@ export function Pesquisa(props) {
         <p>Qual CEP deseja pesquisar?</p>
         <input value={numbersOnly(cepNumber)} onChange={handleChange}/>
         <button onClick={handleSearch}>PESQUISAR</button>
-        <button onClick={handleAdicionarFAvorito}>SALVAR FAVORITO</button>
+        <button onClick={handleAdicionarFavorito}>SALVAR FAVORITO</button>
+        <br/>
+        <p>favorito: {cepFavorito}</p>
+        <CEPDados cepDados={cepDados}/>
 
       </>
     );
